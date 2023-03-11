@@ -17,7 +17,7 @@ def take_screen_shot():
     w = 1920 # set this
     h = 1080 # set this
     
-    hwnd = win32gui.FindWindow(None, "co-op games.txt - Notepad")
+    hwnd = win32gui.FindWindow(None, "Grand Theft Auto V")
     wDC = win32gui.GetWindowDC(hwnd)
     dcObj=win32ui.CreateDCFromHandle(wDC)
     cDC=dcObj.CreateCompatibleDC()
