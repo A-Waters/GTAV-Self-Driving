@@ -14,8 +14,8 @@ def convert(bitmap) -> cv2.Mat:
 
 def take_screen_shot():
     # https://stackoverflow.com/questions/3586046/fastest-way-to-take-a-screenshot-with-python-on-windows
-    w = 1920 # set this
-    h = 1080 # set this
+    w = 800 # set this
+    h = 600 # set this
     
     hwnd = win32gui.FindWindow(None, "Grand Theft Auto V")
     wDC = win32gui.GetWindowDC(hwnd)
@@ -24,7 +24,7 @@ def take_screen_shot():
     dataBitMap = win32ui.CreateBitmap()
     dataBitMap.CreateCompatibleBitmap(dcObj, w, h)
     cDC.SelectObject(dataBitMap)
-    cDC.BitBlt((0,0),(w, h) , dcObj, (0,0), win32con.SRCCOPY)
+    cDC.BitBlt((0,0),(w, h) , dcObj, (3,20), win32con.SRCCOPY)
     
     image = convert(dataBitMap)
 
