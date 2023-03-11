@@ -30,6 +30,7 @@ image_file_name = "training_data.npz"
 
 
 def capture():
+    
     if os.path.isfile(image_file_name):
         saved_data = np.load(image_file_name)
         out_data = dict(zip(("images","labels"), (saved_data[k] for k in saved_data)))
@@ -48,18 +49,16 @@ def capture():
         
         image = take_screen_shot()
         out_image = process_image(image)
-        print(out_image.shape)
+
         key_output = process_keys(key_check())
         
         training_image_data.append([out_image])
         
         training_label_data.append([key_output])
-        print(key_output)
+
 
         if len(training_image_data) % 100 == 0:
             print(len(training_image_data))
-            # cv2.imshow("",out_image)
-            # cv2.waitKey(0)
             with open(image_file_name, 'wb') as f:
                 np.savez(f, training_image_data, training_label_data)
 
