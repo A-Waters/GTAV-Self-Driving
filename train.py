@@ -4,8 +4,14 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 import datetime
+import os
+import constants
+
 # import data
-images, labels = grab_data("training_data.npz",2)
+
+print("Starting script")
+
+images, labels = grab_data(constants.TRAINING_DATA,2)
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -20,19 +26,13 @@ if gpus:
     print(e)
 
 
-
-
-
-
-print("before", len(images))
-
 training_data_images = []
 training_data_labels = []
 validation_data_images = []
 validation_data_labels = []
 
 for i, v in enumerate(images):
-    if random.random() <= 0.80:
+    if random.random() <= constants.TRAINING_VALIDATION_SPLIT:
         # get training data
         training_data_images.append(images[i])
         training_data_labels.append(labels[i])
@@ -49,7 +49,6 @@ training_data_images = np.asarray(training_data_images)
 training_data_labels = np.asarray(training_data_labels).squeeze()
 validation_data_images = np.asarray(validation_data_images)
 validation_data_labels = np.asarray(validation_data_labels).squeeze()
-print(validation_data_labels.shape)
 
 
 # define model / # load mnodel 
@@ -59,8 +58,10 @@ print(validation_data_labels.shape)
     keras.layers.Dense(4, activation='softmax')
 ])'''
 
+print("Building model")
+
 model = keras.models.Sequential([
-    keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,270,480), data_format='channels_first',),
+    keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,constants.IMAGE_HEIGHT,constants.IMAGE_WIDTH), data_format='channels_first',),
     keras.layers.BatchNormalization(),
     keras.layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
@@ -71,6 +72,7 @@ model = keras.models.Sequential([
     keras.layers.Dense(4, activation='softmax')
 ])
 
+print("Comipleing model")
 
 model.compile(
     optimizer=keras.optimizers.RMSprop(),  # Optimizer
@@ -81,13 +83,26 @@ model.compile(
 )
 
 
-log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+checkpoint_dir = os.path.dirname(constants.CHECKPOINT_PATH)
+
+# Create a callback that saves the model's weights
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=constants.CHECKPOINT_PATH,
+                                                 save_weights_only=True,
+                                                 verbose=1,
+                                                 save_freq=constants.SAVE_FREQ*constants.BATCH_SIZE)
+
+
+
+log_dir = constants.LOG_DIR + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 tf.compat.v1.summary.FileWriterCache.clear()
 
 
+print("Training")
+
 # train model 
-history = model.fit(x=training_data_images,y=training_data_labels,batch_size=16,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
+history = model.fit(x=training_data_images,y=training_data_labels,batch_size=constants.BATCH_SIZE,epochs=constants.EPOCHS, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
 
 # save model
 print(history.history)

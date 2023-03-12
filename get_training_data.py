@@ -5,6 +5,9 @@ import cv2
 import numpy as np
 import time
 import os
+import constants
+import grab_data
+
 
 def process_keys(keys):
 
@@ -26,23 +29,15 @@ def process_keys(keys):
 
     return code
 
-image_file_name = "training_data.npz"
+
 
 
 def capture():
     
-    if os.path.isfile(image_file_name):
-        saved_data = np.load(image_file_name)
-        out_data = dict(zip(("images","labels"), (saved_data[k] for k in saved_data)))
-        
-        training_image_data = out_data['images']
-        training_label_data = out_data['labels']
-        print("using exsiting data")
+    training_image_data, training_label_data = grab_data.grab_data(constants.TRAINING_DATA,2)
+    training_image_data = list(training_image_data)
+    training_label_data = list(training_label_data)
 
-    else:
-        training_image_data = []
-        training_label_data = []
-        print("new data creating")
     
     while True:
         time.sleep(0.1)
@@ -57,9 +52,9 @@ def capture():
         training_label_data.append([key_output])
 
 
-        if len(training_image_data) % 100 == 0:
+        if len(training_image_data) % 500 == 0:
             print(len(training_image_data))
-            with open(image_file_name, 'wb') as f:
+            with open(constants.TRAINING_DATA, 'wb') as f:
                 np.savez(f, training_image_data, training_label_data)
 
         if 'P' in key_check():
