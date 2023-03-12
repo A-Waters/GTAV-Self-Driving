@@ -66,7 +66,8 @@ model = keras.models.Sequential([
     keras.layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
-    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Flatten(),
+    keras.layers.Dense(16, activation='relu'),
     keras.layers.Dropout(0.5),
     keras.layers.Dense(4, activation='softmax')
 ])
