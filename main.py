@@ -3,8 +3,9 @@ from process_image import process_image
 import cv2
 import time
 from tensorflow import keras
+import tensorflow as tf
 
-
+print(tf.config.experimental.list_physical_devices())
 
 
 cv2.imshow("",process_image(take_screen_shot()))

@@ -4,4 +4,4 @@ Pillow==9.4.0
 pywin32==305
 tensorflow==2.10.1
 tensorflow_intel==2.10.1
-win32gui==221.6
+pywin32

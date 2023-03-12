@@ -1,9 +1,12 @@
 from grab_data import grab_data 
 import random
 from tensorflow import keras
+import tensorflow as tf
 import numpy as np
+import datetime
 # import data
 images, labels = grab_data("training_data.npz",2)
+
 
 print("before", len(images))
 
@@ -27,9 +30,10 @@ print(f'total: {len(images)} training: {len(training_data_images)}:{len(training
 
 
 training_data_images = np.asarray(training_data_images)
-training_data_labels = np.asarray(training_data_labels)
+training_data_labels = np.asarray(training_data_labels).squeeze()
 validation_data_images = np.asarray(validation_data_images)
-validation_data_labels = np.asarray(validation_data_labels)
+validation_data_labels = np.asarray(validation_data_labels).squeeze()
+print(validation_data_labels.shape)
 
 
 # define model / # load mnodel 
@@ -40,7 +44,7 @@ model = keras.models.Sequential([
 ])
 
 '''model = keras.models.Sequential([
-    keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(480,227)),
+    keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,270,480), data_format='channels_first',),
     keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
     keras.layers.Conv2D(filters=256, kernel_size=(5,5), strides=(1,1), activation='relu', padding="same"),
@@ -58,20 +62,26 @@ model = keras.models.Sequential([
     keras.layers.Dropout(0.5),
     keras.layers.Dense(4096, activation='relu'),
     keras.layers.Dropout(0.5),
-    keras.layers.Dense(10, activation='softmax')
+    keras.layers.Dense(4, activation='softmax')
 ])'''
 
 
 model.compile(
     optimizer=keras.optimizers.RMSprop(),  # Optimizer
     # Loss function to minimize
-    loss=keras.losses.SparseCategoricalCrossentropy(),
+    loss=keras.losses.CategoricalCrossentropy(),
     # List of metrics to monitor
     metrics=["mae", "acc"], # keras.metrics.SparseCategoricalAccuracy()
 )
 
+
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+tf.compat.v1.summary.FileWriterCache.clear()
+
+
 # train model 
-history = model.fit(x=training_data_images,y=training_data_labels,batch_size=32,epochs=10, validation_data=(validation_data_images, validation_data_labels))
+history = model.fit(x=training_data_images,y=training_data_labels,batch_size=32,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
 
 # save model
 print(history.history)

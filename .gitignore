@@ -163,3 +163,5 @@ cython_debug/
 images/train/*
 
 training_data.npz
+
+logs/fit/*
