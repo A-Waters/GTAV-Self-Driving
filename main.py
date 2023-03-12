@@ -54,7 +54,7 @@ while True:  # making a loop
 
 
 
-
+'''
 model = keras.models.Sequential([
     keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(480,227)),
     keras.layers.BatchNormalization(),
@@ -76,7 +76,7 @@ model = keras.models.Sequential([
     keras.layers.Dropout(0.5),
     keras.layers.Dense(10, activation='softmax')
 ])
-
+'''
 
 '''
 
