@@ -48,13 +48,11 @@ model = keras.models.Sequential([
     keras.layers.BatchNormalization(),
     keras.layers.Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
-    keras.layers.Conv2D(filters=128, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
-    keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
     keras.layers.Flatten(),
     keras.layers.Dense(1024, activation='relu'),
     keras.layers.Dropout(0.5),
-    keras.layers.Dense(1024, activation='relu'),
+    keras.layers.Dense(512, activation='relu'),
     keras.layers.Dropout(0.5),
     keras.layers.Dense(4, activation='softmax')
 ])
@@ -75,7 +73,7 @@ tf.compat.v1.summary.FileWriterCache.clear()
 
 
 # train model 
-history = model.fit(x=training_data_images,y=training_data_labels,batch_size=32,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
+history = model.fit(x=training_data_images,y=training_data_labels,batch_size=8,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
 
 # save model
 print(history.history)
