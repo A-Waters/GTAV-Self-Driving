@@ -64,7 +64,7 @@ validation_data_labels = np.asarray(validation_data_labels).squeeze()
 print("Building model")
 
 model = keras.models.Sequential([
-    keras.layers.Conv2D(filters=64, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,constants.IMAGE_HEIGHT,constants.IMAGE_WIDTH), data_format='channels_first',),
+    keras.layers.Conv2D(filters=32, kernel_size=(8,8), strides=(4,4), activation='relu', input_shape=(1,constants.IMAGE_HEIGHT,constants.IMAGE_WIDTH), data_format='channels_first',),
     keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
     keras.layers.Flatten(),
