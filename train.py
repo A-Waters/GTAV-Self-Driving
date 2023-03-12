@@ -67,7 +67,7 @@ model = keras.models.Sequential([
     keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
     keras.layers.Flatten(),
-    keras.layers.Dense(512, activation='relu'),
+    keras.layers.Dense(128, activation='relu'),
     keras.layers.Dropout(0.5),
     keras.layers.Dense(4, activation='softmax')
 ])
