@@ -7,6 +7,22 @@ import datetime
 # import data
 images, labels = grab_data("training_data.npz",2)
 
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in gpus:
+      tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
+
+
+
+
+
 
 print("before", len(images))
 
@@ -46,12 +62,10 @@ print(validation_data_labels.shape)
 model = keras.models.Sequential([
     keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,270,480), data_format='channels_first',),
     keras.layers.BatchNormalization(),
-    keras.layers.Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
+    keras.layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
     keras.layers.MaxPool2D(pool_size=(3,3), strides=(2,2)),
     keras.layers.Flatten(),
-    keras.layers.Dense(1024, activation='relu'),
-    keras.layers.Dropout(0.5),
     keras.layers.Dense(512, activation='relu'),
     keras.layers.Dropout(0.5),
     keras.layers.Dense(4, activation='softmax')
@@ -73,7 +87,7 @@ tf.compat.v1.summary.FileWriterCache.clear()
 
 
 # train model 
-history = model.fit(x=training_data_images,y=training_data_labels,batch_size=8,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
+history = model.fit(x=training_data_images,y=training_data_labels,batch_size=16,epochs=10, validation_data=(validation_data_images, validation_data_labels), callbacks=[tensorboard_callback])
 
 # save model
 print(history.history)
