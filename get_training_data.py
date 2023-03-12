@@ -38,27 +38,36 @@ def capture():
     training_image_data = list(training_image_data)
     training_label_data = list(training_label_data)
 
-    
+    capture = False
+
     while True:
-        time.sleep(0.1)
-        
-        image = take_screen_shot()
-        out_image = process_image(image)
-
-        key_output = process_keys(key_check())
-        
-        training_image_data.append([out_image])
-        
-        training_label_data.append([key_output])
+        if 'O' in key_check():
+            capture = True
+            print("starting data collection")
+            time.sleep(5)
 
 
-        if len(training_image_data) % 500 == 0:
-            print(len(training_image_data))
-            with open(constants.TRAINING_DATA, 'wb') as f:
-                np.savez(f, training_image_data, training_label_data)
+        while capture:
+            time.sleep(0.1)
+            
+            image = take_screen_shot()
+            out_image = process_image(image)
 
-        if 'P' in key_check():
-            break
+            key_output = process_keys(key_check())
+            
+            training_image_data.append([out_image])
+            
+            training_label_data.append([key_output])
+
+
+            if len(training_image_data) % 500 == 0:
+                print(len(training_image_data))
+                with open(constants.TRAINING_DATA, 'wb') as f:
+                    np.savez(f, training_image_data, training_label_data)
+
+            if 'P' in key_check():
+                capture = False
+                print("ending data collection")
         
     
 
