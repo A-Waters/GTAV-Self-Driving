@@ -55,20 +55,20 @@ validation_data_labels = np.asarray(validation_data_labels).squeeze()
 
 
 # define model / # load mnodel 
-'''model = keras.models.Sequential([
+model = keras.models.Sequential([
     keras.layers.Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=(1,270,480), data_format='channels_first',),
     keras.layers.Flatten(),
     keras.layers.Dense(4, activation='softmax')
-])'''
+])
 
 print("Building model")
-
+'''
 model = keras.models.Sequential([
     keras.layers.Conv2D(filters=16, kernel_size=(8,8), strides=(4,4), activation='relu', input_shape=(1,constants.IMAGE_HEIGHT,constants.IMAGE_WIDTH), data_format='channels_first',),
     keras.layers.Flatten(),
     keras.layers.Dense(8, activation='relu'),
     keras.layers.Dense(4, activation='softmax')
-])
+])'''
 
 print("Comipleing model")
 
